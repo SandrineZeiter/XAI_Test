@@ -80,6 +80,9 @@ def lime_testing_userinput(userinput):
     #plt.savefig("figure.png")
     #plt.show()
 
+    print('Explanation for class %s' % class_names[class_index])
+    print('\n'.join(map(str, exp2.as_list(label=class_index))))
+
     return prediction
 
 def lime_testing():
@@ -139,8 +142,8 @@ def webhook():
         textToAnalyze = textToAnalyze + " " + userinput
         prediction = lime_testing_userinput(userinput)
         fulfillmentText = "Thank you for telling me about your day. According to what you said, you feel " + prediction + "."
-        print("Text to analyze", textToAnalyze)
-        print("User input", userinput)
+        #print("Text to analyze", textToAnalyze)
+        #print("User input", userinput)
 
    # elif query_result.get('action') == "get.informationtwo":
     #    userinput = query_result["queryText"]
