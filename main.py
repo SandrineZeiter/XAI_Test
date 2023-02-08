@@ -60,6 +60,7 @@ gs = GridSearchCV(p1, param_grid=param_grid, cv=5, return_train_score=True)
 gs.fit(train.tweet, train.feeling)
 
 # ----------------------- LIME -----------------------
+
 def lime_testing_userinput(userinput):
 
     explainer = LimeTextExplainer(class_names=class_names)
@@ -67,14 +68,17 @@ def lime_testing_userinput(userinput):
     exp2 = explainer.explain_instance(userinput,
                                       p1.predict_proba,
                                       num_features=5,
-                                      top_labels=2)
+                                      top_labels=len(class_names))
 
     print(userinput)
     class_index = exp2.available_labels()[0]
 
     prediction = class_names[class_index]
     print(prediction)
-    exp2.show_in_notebook(text=True)
+    exp2.show_in_notebook([class_index])
+    #exp2.as_pyplot_figure(label=exp2.available_labels()[0])
+    #plt.savefig("figure.png")
+    #plt.show()
 
     return prediction
 
@@ -101,6 +105,7 @@ def lime_testing():
 app = Flask(__name__)
 
 @app.route('/')
+
 @app.route('/home')
 def home():
     return "Hello World"
