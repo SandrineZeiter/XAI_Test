@@ -60,7 +60,6 @@ gs = GridSearchCV(p1, param_grid=param_grid, cv=5, return_train_score=True)
 gs.fit(train.tweet, train.feeling)
 
 # ----------------------- LIME -----------------------
-
 def lime_testing_userinput(userinput):
 
     explainer = LimeTextExplainer(class_names=class_names)
@@ -110,6 +109,7 @@ def home():
 
 # define webhook for different actions and results
 def webhook():
+    textToAnalyze = " "
 
     req = request.get_json(silent=True, force=True)
 
@@ -129,6 +129,21 @@ def webhook():
         fulfillmentText = "got feeling"
         lime_testing()
 
+    elif query_result.get('action') == "get.informationone":
+        userinput = query_result["queryText"]
+        textToAnalyze = textToAnalyze + " " + userinput
+        prediction = lime_testing_userinput(userinput)
+        fulfillmentText = "Thank you for telling me about your day. According to what you said, you feel " + prediction + "."
+        print("Text to analyze", textToAnalyze)
+        print("User input", userinput)
+
+   # elif query_result.get('action') == "get.informationtwo":
+    #    userinput = query_result["queryText"]
+     #   fulfillmentText = "Thank you."
+      #  textToAnalyze = textToAnalyze + " " + userinput
+       # lime_testing_userinput(userinput)
+        #print("Text to analyze", textToAnalyze)
+        #print("User input", userinput)
 
     elif query_result.get('action') == 'input.unknown':
         #print(query_result["queryText"])
