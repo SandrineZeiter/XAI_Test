@@ -31,6 +31,7 @@ matplotlib.rc('axes', titlesize=16)
 matplotlib.rc('axes', labelsize=16)
 matplotlib.rc('figure', titlesize=20)
 
+textToAnalyze = " "
 # ----------------------- ML-part -----------------------
 #def machine_learning():
 # import dataset
@@ -72,9 +73,10 @@ def lime_testing_userinput(userinput):
 
     print(userinput)
     class_index = exp2.available_labels()[0]
+    #print("Class index ", class_index)
 
     prediction = class_names[class_index]
-    print(prediction)
+    print("Prediction ", prediction)
     exp2.show_in_notebook([class_index])
     #exp2.as_pyplot_figure(label=exp2.available_labels()[0])
     #plt.savefig("figure.png")
@@ -116,8 +118,9 @@ def home():
 @app.route('/webhook', methods=['GET', 'POST'])
 
 # define webhook for different actions and results
+
 def webhook():
-    textToAnalyze = " "
+    global textToAnalyze
 
     req = request.get_json(silent=True, force=True)
 
@@ -137,21 +140,31 @@ def webhook():
         fulfillmentText = "got feeling"
         lime_testing()
 
-    elif query_result.get('action') == "get.informationone":
+    elif query_result.get('action') == 'get.informationone':
+
         userinput = query_result["queryText"]
         textToAnalyze = textToAnalyze + " " + userinput
-        prediction = lime_testing_userinput(userinput)
-        fulfillmentText = "Thank you for telling me about your day. According to what you said, you feel " + prediction + "."
-        #print("Text to analyze", textToAnalyze)
-        #print("User input", userinput)
+        if len(textToAnalyze) < 256:
+            #prediction = lime_testing_userinput(userinput)
+            #fulfillmentText = "Thank you for telling me about your day. According to what you said, you feel " + prediction + "."
+            fulfillmentText = "Can you tell me more about that?"
+            print("Text too short")
+            textToAnalyze = textToAnalyze + " " + userinput
+            print("Text to analyze", textToAnalyze)
+            #print("User input 1", userinput)
+        else:
+            prediction = lime_testing_userinput(textToAnalyze)
+            print("else")
+            fulfillmentText = "Thank you for telling me about your day. According to what you said, you feel " + prediction + "."
 
-   # elif query_result.get('action') == "get.informationtwo":
-    #    userinput = query_result["queryText"]
-     #   fulfillmentText = "Thank you."
-      #  textToAnalyze = textToAnalyze + " " + userinput
-       # lime_testing_userinput(userinput)
-        #print("Text to analyze", textToAnalyze)
-        #print("User input", userinput)
+    elif query_result.get('action') == "get.informationtwo":
+        userinput = query_result["queryText"]
+        textToAnalyze = textToAnalyze + " " + userinput
+        prediction = lime_testing_userinput(textToAnalyze)
+        fulfillmentText = "Thank you for telling me about your day. According to what you said, you feel " + prediction + "."
+        #fulfillmentText = "Thank you."
+        #print("Text to analyze 2", textToAnalyze)
+        #print("User input 2", userinput)
 
     elif query_result.get('action') == 'input.unknown':
         #print(query_result["queryText"])
