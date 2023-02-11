@@ -25,6 +25,7 @@ from lime.lime_text import LimeTextExplainer
 from lime import lime_text
 
 import matplotlib
+matplotlib.use("Agg") #To save the figure
 matplotlib.rc('xtick', labelsize=14)
 matplotlib.rc('ytick', labelsize=14)
 matplotlib.rc('axes', titlesize=16)
@@ -78,8 +79,8 @@ def lime_testing_userinput(userinput):
     prediction = class_names[class_index]
     print("Prediction ", prediction)
     exp2.show_in_notebook([class_index])
-    #exp2.as_pyplot_figure(label=exp2.available_labels()[0])
-    #plt.savefig("figure.png")
+    exp2.as_pyplot_figure(label=exp2.available_labels()[0])
+    plt.savefig("figure.png", bbox_inches="tight")
     #plt.show()
 
     print('Explanation for class %s' % class_names[class_index])
