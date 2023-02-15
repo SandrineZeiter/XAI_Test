@@ -125,11 +125,11 @@ def webhook():
 
     req = request.get_json(silent=True, force=True)
 
-    fullfillmentText = ''
+    fulfillmentText = ''
     query_result = req.get('queryResult')
     #print(query_result)
 
-    fulfillmentText = "it worked ! "
+    #fulfillmentText = "it worked ! "
     if query_result.get('action') == 'get.address': # if intent oou action is equal ...
         ### Perform set of executable code
         ### if required
@@ -140,6 +140,25 @@ def webhook():
     elif query_result.get('action') == 'get.feeling':
         fulfillmentText = "got feeling"
         lime_testing()
+
+    elif query_result.get('action') == 'fallback':
+        userinput = query_result["queryText"]
+        textToAnalyze = textToAnalyze + " " + userinput
+        if len(textToAnalyze) < 64:
+            # prediction = lime_testing_userinput(userinput)
+            # fulfillmentText = "Thank you for telling me about your day. According to what you said, you feel " + prediction + "."
+            fulfillmentText = "Can you tell me more about that?"
+            print("Text too short")
+            #textToAnalyze = textToAnalyze + " " + userinput
+            print("Text to analyze: ", textToAnalyze)
+            print("end of input")
+            # print("User input 1", userinput)
+        else:
+            prediction = lime_testing_userinput(textToAnalyze)
+            print("else")
+            fulfillmentText = "Thank you for telling me about your day. According to what you said, you feel " + prediction + "."
+            #fulfillmentText = "Thank you for telling me about your day. According to what you said, you feel " + prediction + "."
+            textToAnalyze = '' #So that I don't have to restart the whole script over and over again.
 
     elif query_result.get('action') == 'get.informationone':
 
@@ -158,6 +177,7 @@ def webhook():
             print("else")
             fulfillmentText = "Thank you for telling me about your day. According to what you said, you feel " + prediction + "."
 
+
     elif query_result.get('action') == "get.informationtwo":
         userinput = query_result["queryText"]
         textToAnalyze = textToAnalyze + " " + userinput
@@ -166,6 +186,7 @@ def webhook():
         #fulfillmentText = "Thank you."
         #print("Text to analyze 2", textToAnalyze)
         #print("User input 2", userinput)
+
 
     elif query_result.get('action') == 'input.unknown':
         #print(query_result["queryText"])
